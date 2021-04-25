@@ -22,7 +22,7 @@ class MinimumDeploymentTargetTests: XCTestCase {
                                    output: "".asResult,
                                    stderrOutput: "xcodebuild: error: SDK \"macosx\" cannot be located.".asResult)
 
-        XCTAssertNil(try MinimumDeploymentTarget.computeXCTestMinimumDeploymentTarget(with: result))
+        XCTAssertNil(try MinimumDeploymentTarget.computeXCTestMinimumDeploymentTarget(with: result, platform: "MACOS"))
     }
 
     func testThrowsWithNonPathOutput() throws {
@@ -32,7 +32,7 @@ class MinimumDeploymentTargetTests: XCTestCase {
                                    output: "some string".asResult,
                                    stderrOutput: "".asResult)
 
-        XCTAssertThrowsError(try MinimumDeploymentTarget.computeXCTestMinimumDeploymentTarget(with: result))
+        XCTAssertThrowsError(try MinimumDeploymentTarget.computeXCTestMinimumDeploymentTarget(with: result, platform: "MACCOS"))
     }
 
     func testThrowsWithErrorForOutput() throws {
@@ -42,7 +42,7 @@ class MinimumDeploymentTargetTests: XCTestCase {
                                    output: .failure(DummyError()),
                                    stderrOutput: "".asResult)
 
-        XCTAssertThrowsError(try MinimumDeploymentTarget.computeXCTestMinimumDeploymentTarget(with: result))
+        XCTAssertThrowsError(try MinimumDeploymentTarget.computeXCTestMinimumDeploymentTarget(with: result, platform: "MACOS"))
     }
 #endif
 }

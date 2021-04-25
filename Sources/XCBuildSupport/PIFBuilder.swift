@@ -256,6 +256,7 @@ final class PackagePIFProjectBuilder: PIFProjectBuilder {
         let firstTarget = package.targets.first(where: { $0.type != .test })?.underlyingTarget ?? package.targets.first?.underlyingTarget
         settings[.MACOSX_DEPLOYMENT_TARGET] = firstTarget?.deploymentTarget(for: .macOS)
         settings[.IPHONEOS_DEPLOYMENT_TARGET] = firstTarget?.deploymentTarget(for: .iOS)
+        settings[.IPHONEOS_DEPLOYMENT_TARGET, for: .macCatalyst] = firstTarget?.deploymentTarget(for: .macCatalyst)
         settings[.TVOS_DEPLOYMENT_TARGET] = firstTarget?.deploymentTarget(for: .tvOS)
         settings[.WATCHOS_DEPLOYMENT_TARGET] = firstTarget?.deploymentTarget(for: .watchOS)
         settings[.DRIVERKIT_DEPLOYMENT_TARGET] = firstTarget?.deploymentTarget(for: .driverKit)
@@ -1470,6 +1471,9 @@ extension Array where Element == PackageConditionProtocol {
             case .macOS:
                 result += PIF.PlatformFilter.macOSFilters
 
+            case .macCatalyst:
+                result += PIF.PlatformFilter.macCatalystFilters
+
             case .iOS:
                 result += PIF.PlatformFilter.iOSFilters
 
@@ -1504,6 +1508,11 @@ extension PIF.PlatformFilter {
 
     /// macOS platform filters.
     public static let macOSFilters: [PIF.PlatformFilter] = [.init(platform: "macos")]
+
+    /// Mac Catalyst platform filters.
+    public static let macCatalystFilters: [PIF.PlatformFilter] = [
+        .init(platform: "ios", environment: "maccatalyst")
+    ]
 
     /// iOS platform filters.
     public static let iOSFilters: [PIF.PlatformFilter] = [
@@ -1553,6 +1562,7 @@ private extension PIF.BuildSettings.Platform {
         switch platform {
         case .iOS: return .iOS
         case .linux: return .linux
+        case .macCatalyst: return .macCatalyst
         case .macOS: return .macOS
         case .tvOS: return .tvOS
         case .watchOS: return .watchOS
